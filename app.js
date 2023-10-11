@@ -1,5 +1,5 @@
-import { buildProgramFromSources, loadShadersFromURLS, setupWebGL } from "../../libs/utils.js";
-import { vec2,flatten, sizeof} from "../../libs/MV.js";
+import { buildProgramFromSources, loadShadersFromURLS, setupWebGL } from "./libs/utils.js";
+import { vec2,flatten, sizeof} from "./libs/MV.js";
 import { ifsMatrixes, ifsProbs } from "./ifs.js";
 
 /** @type {WebGL2RenderingContext} */
@@ -19,8 +19,11 @@ var aBuffer, bBuffer;
 const MAX_POINTS = 500000;
 const NUMBER_INTERACTIONS = 50;
 let currentIteration = 0;
+let zoomLevel = 1;
 
 window.addEventListener("keypress", switchCase);
+
+window.addEventListener("wheel", handleZoom);
 
 function resize(){
     canvas.width = window.innerWidth;
@@ -67,8 +70,19 @@ function setup(shaders)
     window.requestAnimationFrame(animate);
 }
 
+function handleZoom(event) {
+    const delta = Math.sign(event.deltaY);
+    zoomLevel += event.deltaY * 0.001; // You can adjust the zoom speed as needed
+    zoomLevel = Math.max(0.1, Math.min(10.0, zoomLevel)); // Limit the zoom range
+    //gl.uniform1f(zoomUniformLocation, zoomLevel); // Update the 'u_zoom' uniform, ideal mas não funciona
+    //animate();
+    //flag = true;
+    //window.requestAnimationFrame(animate);
+}
+
 function switchCase(event) {
     let number = event.key;
+    zoomLevel = 1;
     switch(number) {
         case '1':
             arraymatrix = ifsMatrixes[0];
@@ -139,6 +153,10 @@ function animate()
 
     gl.uniform2f(gl.getUniformLocation(drawProgram, "uBottomLeft"), -aspect*4, -1.0);
     gl.uniform2f(gl.getUniformLocation(drawProgram, "uTopRight"), aspect*4, 11.0);
+
+    // Zoom
+    const zoomUniformLocation = gl.getUniformLocation(drawProgram, "u_zoom");
+    gl.uniform1f(zoomUniformLocation, zoomLevel);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, aBuffer);
     const vPosition = gl.getAttribLocation(drawProgram, "vPosition");
