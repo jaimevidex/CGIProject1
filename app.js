@@ -16,9 +16,12 @@ var aspect;
 /** @type {WebGLBuffer} */
 var aBuffer, bBuffer;
 
-const MAX_POINTS = 500000;
+const MAX_POINTS = 5000000;
 const NUMBER_INTERACTIONS = 50;
+let totalIterations = NUMBER_INTERACTIONS;
 let currentIteration = 0;
+let currentFractal = 0;
+let flag = false;
 
 // Movement variables
 let harmonizer = 0.001;
@@ -96,15 +99,37 @@ function handleDelta(event) {
     mouseupY = event.y;
     x_delta = (mouseupX - mousedownX) * -harmonizer;
     y_delta = (mouseupY - mousedownY) * harmonizer;
-    console.log(x_delta, y_delta);
 }
 
 function switchCase(event) {
-    let number = event.key;
-    zoomLevel = 1;
-    x_delta = 1;
-    y_delta = 1;
-    switch(number) {
+    let pressedKey = event.key;
+    if (isFinite(pressedKey)){
+        zoomLevel = 1;
+        x_delta = 1;
+        y_delta = 1;
+        currentFractal = pressedKey-1;
+    }
+    switch(pressedKey) {
+        case "+":
+            totalIterations += 1;
+        break;
+        case "-":
+            if (totalIterations > 0)
+                totalIterations -= 1;
+        break;
+        case "i":
+            arraymatrix = ifsMatrixes[currentFractal];
+            prob = ifsProbs[currentFractal];
+            currentIteration = 0;
+            if (flag){
+                totalIterations = NUMBER_INTERACTIONS;
+                flag = false;
+            }
+            else {
+                totalIterations = 0;
+                flag = true;
+            }
+            break;
         case '1':
             arraymatrix = ifsMatrixes[0];
             prob = ifsProbs[0];
@@ -155,6 +180,9 @@ function switchCase(event) {
             prob = ifsProbs[9];
             currentIteration = 0;
             break;
+        case "c":
+            console.log(currentIteration, totalIterations);
+            break;
         default:
             arraymatrix = ifsMatrixes[0];
             prob = ifsProbs[0];
@@ -193,8 +221,8 @@ function animate()
     gl.drawArrays(gl.POINTS, 0, MAX_POINTS);
 
     // Compute code
-    if(currentIteration >= NUMBER_INTERACTIONS) return;
-
+    if(currentIteration >= totalIterations) return;
+    
     gl.useProgram(computeProgram);
     
     for(let i=0; i<arraymatrix.length; i++) {
