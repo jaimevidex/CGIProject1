@@ -19,11 +19,21 @@ var aBuffer, bBuffer;
 const MAX_POINTS = 500000;
 const NUMBER_INTERACTIONS = 50;
 let currentIteration = 0;
+
+// Movement variables
+let harmonizer = 0.001;
 let zoomLevel = 1;
+let x_delta = 0;
+let y_delta = 0;
+let mousedownX, mousedownY, mouseupX, mouseupY = 1;
 
 window.addEventListener("keypress", switchCase);
 
 window.addEventListener("wheel", handleZoom);
+
+window.addEventListener("mousedown", handleMouseDown);
+
+window.addEventListener("mouseup", handleDelta);
 
 function resize(){
     canvas.width = window.innerWidth;
@@ -74,15 +84,26 @@ function handleZoom(event) {
     const delta = Math.sign(event.deltaY);
     zoomLevel += event.deltaY * 0.001; // You can adjust the zoom speed as needed
     zoomLevel = Math.max(0.1, Math.min(10.0, zoomLevel)); // Limit the zoom range
-    //gl.uniform1f(zoomUniformLocation, zoomLevel); // Update the 'u_zoom' uniform, ideal mas não funciona
-    //animate();
-    //flag = true;
-    //window.requestAnimationFrame(animate);
+}
+
+function handleMouseDown(event) {
+    mousedownX = event.x;
+    mousedownY = event.y;
+}
+
+function handleDelta(event) {
+    mouseupX = event.x;
+    mouseupY = event.y;
+    x_delta = (mouseupX - mousedownX) * -harmonizer;
+    y_delta = (mouseupY - mousedownY) * harmonizer;
+    console.log(x_delta, y_delta);
 }
 
 function switchCase(event) {
     let number = event.key;
     zoomLevel = 1;
+    x_delta = 1;
+    y_delta = 1;
     switch(number) {
         case '1':
             arraymatrix = ifsMatrixes[0];
@@ -157,6 +178,12 @@ function animate()
     // Zoom
     const zoomUniformLocation = gl.getUniformLocation(drawProgram, "u_zoom");
     gl.uniform1f(zoomUniformLocation, zoomLevel);
+4
+    // Deslocamento
+    const deltaXUniformLocation = gl.getUniformLocation(drawProgram, "x_delta");
+    gl.uniform1f(deltaXUniformLocation, x_delta);
+    const deltaYUniformLocation = gl.getUniformLocation(drawProgram, "y_delta");
+    gl.uniform1f(deltaYUniformLocation, y_delta);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, aBuffer);
     const vPosition = gl.getAttribLocation(drawProgram, "vPosition");
