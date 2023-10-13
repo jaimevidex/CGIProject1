@@ -16,7 +16,7 @@ var aspect;
 /** @type {WebGLBuffer} */
 var aBuffer, bBuffer;
 
-const MAX_POINTS = 5000000;
+const MAX_POINTS = 50000;
 const NUMBER_INTERACTIONS = 50;
 let totalIterations = NUMBER_INTERACTIONS;
 let currentIteration = 0;
@@ -118,9 +118,6 @@ function switchCase(event) {
                 totalIterations -= 1;
         break;
         case "i":
-            arraymatrix = ifsMatrixes[currentFractal];
-            prob = ifsProbs[currentFractal];
-            currentIteration = 0;
             if (flag){
                 totalIterations = NUMBER_INTERACTIONS;
                 flag = false;
@@ -129,6 +126,9 @@ function switchCase(event) {
                 totalIterations = 0;
                 flag = true;
             }
+            arraymatrix = ifsMatrixes[currentFractal];
+            prob = ifsProbs[currentFractal];
+            currentIteration = 0;
             break;
         case '1':
             arraymatrix = ifsMatrixes[0];
