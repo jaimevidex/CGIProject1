@@ -2,7 +2,7 @@
 
 An interactive renderer for **Iterated Function Systems** — fractals defined by a handful of affine transformations — computed almost entirely on the graphics card.
 
-**[Live demo](https://jaimevidex.github.io/CGIProject1/)** · *Press `1`–`9` and `0` to switch fractals.*
+**[Live demo](https://jaimevidex.github.io/ifs-fractals-webgl/)** · *Press `1`–`9` and `0` to switch fractals.*
 
 ## How it works
 
@@ -42,8 +42,8 @@ python3 -m http.server 8000
 | `app.js` | WebGL2 setup, transform feedback, render loop, key handling |
 | `ifs.js` | The ten IFS definitions (matrices + probabilities) |
 | `shaders/` | Compute and draw shaders |
-| `libs/` | Course-provided WebGL helpers (`MV.js`, `utils.js`, three.js) |
+| `libs/` | WebGL helpers (`MV.js`, `utils.js`, three.js) |
 
 ## Context
 
-Built for the *Computação Gráfica e Interfaces* course at Instituto Superior Técnico. The `libs/` folder is the course scaffolding, kept so the project runs as submitted.
+The `libs/` folder is the rendering scaffolding this project was built on, included so it runs standalone without any external setup.
