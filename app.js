@@ -1,5 +1,5 @@
-import { buildProgramFromSources, loadShadersFromURLS, setupWebGL } from "../../libs/utils.js";
-import { vec2,flatten, sizeof} from "../../libs/MV.js";
+import { buildProgramFromSources, loadShadersFromURLS, setupWebGL } from "./libs/utils.js";
+import { vec2,flatten, sizeof} from "./libs/MV.js";
 import { ifsMatrixes, ifsProbs } from "./ifs.js";
 
 /** @type {WebGL2RenderingContext} */
